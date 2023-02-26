@@ -12,18 +12,17 @@ uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
+    df = df.drop('median_house_value', axis=1)
 
-    df = df.drop('median_house_value', axis=1, inplace=True)
-
-    list_price = [0 for i in range(len(df))]
     with st.spinner("Predicting the price"):
-        df['predicted_median_house_value'] = df.apply(
-            lambda row: predict_price(row['longitude'], row['latitude'], row['housing_median_age'], row['total_rooms'],
-                                      row['total_bedrooms'], row['population'], row['households'], row['median_income'],
-                                      row['ocean_proximity']), axis=1)
+        df['predicted_median_house_value'] = df.apply(lambda x: predict_price(x['longitude'], x['latitude'],
+                                                                              x['housing_median_age'], x['total_rooms'],
+                                                                              x['total_bedrooms'], x['population'],
+                                                                              x['households'], x['median_income'],
+                                                                              x['ocean_proximity'])[0], axis=1)
 
     st.markdown("### Predicted Data")
-    st.dataframe(df.head())
+    st.dataframe(df)
 
 with st.expander("Enter the details manually"):
     form = st.form("Data")

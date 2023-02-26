@@ -14,7 +14,7 @@ To run the web app, run the following command in the terminal.
 Go to the link provided in the terminal to view the web app.
 
 ## Demo
-The web app is deployed on Streamlit. You can view the web app [here]().
+The web app is deployed on Streamlit. You can view the web app [here](https://davidhdezg-housing-value-prediction-main-883ijd.streamlit.app).
 
 
 ## Contributing
