@@ -13,18 +13,7 @@ from sklearn.preprocessing import StandardScaler
 
 model = joblib.load("model.pkl")
 
-DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml2/master/"
 HOUSING_PATH = os.path.join("datasets", "housing")
-HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
-
-
-def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
-    os.makedirs(housing_path, exist_ok=True)
-    tgz_path = os.path.join(housing_path, "housing.tgz")
-    urllib.urlretrieve(housing_url, tgz_path)
-    housing_tgz = tarfile.open(tgz_path)
-    housing_tgz.extractall(path=housing_path)
-    housing_tgz.close()
 
 
 def load_housing_data(housing_path=HOUSING_PATH):
@@ -32,7 +21,6 @@ def load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 
-fetch_housing_data()
 housing = load_housing_data()
 
 housing = housing.drop("median_house_value", axis=1)
@@ -75,11 +63,14 @@ full_pipeline = ColumnTransformer([
 housing_prepared = full_pipeline.fit(housing)
 
 
-def predict_price(longitude=0, latitude=0, housing_median_age=0, total_rooms=1, total_bedrooms=1, population=0,
-                  households=1, median_income=0, ocean_proximity="INLAND"):
+def to_dataframe(longitude=0, latitude=0, housing_median_age=0, total_rooms=1, total_bedrooms=1, population=0,
+                 households=1, median_income=0, ocean_proximity="INLAND"):
     data = {"longitude": [longitude], "latitude": [latitude], "housing_median_age": [housing_median_age],
             "total_rooms": [total_rooms], "total_bedrooms": [total_bedrooms], "population": [population],
             "households": [households], "median_income": [median_income], "ocean_proximity": [ocean_proximity]}
-    data = pd.DataFrame(data)
+    return pd.DataFrame(data)
+
+
+def predict_price(data):
     prepared = full_pipeline.transform(data)
     return model.predict(prepared)

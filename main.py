@@ -1,5 +1,5 @@
 import streamlit as st
-from DataUtils import predict_price
+from DataUtils import predict_price, to_dataframe
 import pandas as pd
 
 st.set_page_config(page_title="California Housing Price Prediction", page_icon=":house_with_garden:",
@@ -15,11 +15,7 @@ if uploaded_file:
     df = df.drop('median_house_value', axis=1)
 
     with st.spinner("Predicting the price"):
-        df['predicted_median_house_value'] = df.apply(lambda x: predict_price(x['longitude'], x['latitude'],
-                                                                              x['housing_median_age'], x['total_rooms'],
-                                                                              x['total_bedrooms'], x['population'],
-                                                                              x['households'], x['median_income'],
-                                                                              x['ocean_proximity'])[0], axis=1)
+        df['predicted_median_house_value'] = predict_price(df)
 
     st.markdown("### Predicted Data")
     st.dataframe(df)
@@ -39,6 +35,30 @@ with st.expander("Enter the details manually"):
 
     submitted = form.form_submit_button("Submit")
     if submitted:
-        price = predict_price(longitude, latitude, housing_median_age, total_rooms, total_bedrooms, population,
-                              households, median_income, ocean_proximity)
+        price = predict_price(
+            to_dataframe(longitude, latitude, housing_median_age, total_rooms, total_bedrooms, population,
+                         households, median_income, ocean_proximity))
         st.markdown("### Predicted Value: $" + str(price[0].round(3)))
+
+footer = """<style>
+a:link , a:visited{
+color: white;
+background-color: transparent;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: #0d1117;
+color: white;
+text-align: center;
+}
+</style>
+<div class="footer">
+<p style='display: block; text-align: center;'>David Eduardo Hernández García - 338953</p>
+<p> <a style='display: block; text-align: center;' href="https://github.com/DavidHdezG/Housing-Value-Prediction">Repositorio</a></p>
+</div>
+"""
+st.markdown(footer, unsafe_allow_html=True)
