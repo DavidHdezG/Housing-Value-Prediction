@@ -23,7 +23,7 @@ if uploaded_file:
 with st.expander("Enter the details manually"):
     form = st.form("Data")
     form.markdown("### Enter the details")
-    longitude = form.number_input("longitude")
+    longitude = form.number_input("longitude",max_value=0)
     latitude = form.number_input("latitude")
     housing_median_age = form.number_input("housing_median_age")
     total_rooms = form.number_input("total_rooms", min_value=1)
